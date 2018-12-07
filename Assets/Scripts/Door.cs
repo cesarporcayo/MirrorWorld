@@ -11,6 +11,10 @@ public class Door : MonoBehaviour {
     public int keyRequired;
     TextMesh doorNumber;
     public GameObject canvas;
+    
+
+    public AudioSource sound;
+    private bool success;
 
     private void Start()
     {
@@ -18,7 +22,15 @@ public class Door : MonoBehaviour {
     }
     private void Update()
     {
-        doorNumber.text = (keyRequired - keyNumber).ToString();
+        //doorNumber.text = (keyRequired - keyNumber).ToString();
+
+        if (keyNumber >= keyRequired) 
+        {
+            //sound.Play();
+            success = false;
+            this.GetComponent<MeshRenderer>().materials[0].color = Color.white;
+
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)

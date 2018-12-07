@@ -13,20 +13,27 @@ namespace UnityStandardAssets._2D
 
         private Transform m_GroundCheck;    // A position marking where to check if the player is grounded.
         const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
-        private bool m_Grounded;            // Whether or not the player is grounded.
+        public bool m_Grounded;            // Whether or not the player is grounded.
         private Transform m_CeilingCheck;   // A position marking where to check for ceilings
         const float k_CeilingRadius = .01f; // Radius of the overlap circle to determine if the player can stand up
         private Animator m_Anim;            // Reference to the player's animator component.
         private Rigidbody2D m_Rigidbody2D;
         private bool m_FacingRight = true;  // For determining which way the player is currently facing.
 
+        public AudioSource runSound;
+        public AudioSource jumpSound;
+        public AudioSource coinCollection;
+
         private void Awake()
         {
-            // Setting up references.
+            // Setting up references
             m_GroundCheck = transform.Find("GroundCheck");
             m_CeilingCheck = transform.Find("CeilingCheck");
             m_Anim = GetComponent<Animator>();
             m_Rigidbody2D = GetComponent<Rigidbody2D>();
+
+            runSound.GetComponent<AudioSource>().enabled = true;
+            jumpSound.GetComponent<AudioSource>().enabled = true;
         }
 
 
@@ -76,6 +83,12 @@ namespace UnityStandardAssets._2D
                 // Move the character
                 m_Rigidbody2D.velocity = new Vector2(move*m_MaxSpeed, m_Rigidbody2D.velocity.y);
 
+                if ((move > 0 || move < 0) && m_Grounded)
+                {
+                    if (!runSound.isPlaying) runSound.Play();
+                }
+                else runSound.Stop();
+
                 // If the input is moving the player right and the player is facing left...
                 if (move > 0 && !m_FacingRight)
                 {
@@ -92,6 +105,7 @@ namespace UnityStandardAssets._2D
             // If the player should jump...
             if (m_Grounded && jump && m_Anim.GetBool("Ground"))
             {
+                jumpSound.Play();
                 // Add a vertical force to the player.
                 m_Grounded = false;
                 m_Anim.SetBool("Ground", false);
@@ -109,6 +123,15 @@ namespace UnityStandardAssets._2D
             Vector3 theScale = transform.localScale;
             theScale.x *= -1;
             transform.localScale = theScale;
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+
+            if (other.tag == "Key")
+            {
+                coinCollection.Play();
+            }
         }
     }
 }

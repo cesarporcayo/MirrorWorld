@@ -6,15 +6,23 @@ public class Key : MonoBehaviour {
     public GameObject dummySphere;
     public GameObject Door;
     bool picked = false;
-    private void OnTriggerEnter2D(Collider2D other)
+
+    public AudioSource sound;
+
+	private void OnTriggerEnter2D(Collider2D other)
     {
+        
         if (other.tag == "Player" && picked == false)
         {
+            sound.Play();
             picked = true;
-            Debug.Log("HERE");
+            Debug.Log("did so");
+            // float doorSize = (Door.GetComponent<Door>().keyNumber * .4F) + 0;
+            // Door.transform.localScale += new Vector3(0, doorSize, 0);
             Door.GetComponent<Door>().keyNumber+=1;
-            Destroy(this.transform.parent.gameObject);
             dummySphere.GetComponent<MeshRenderer>().materials[0].color = Color.white;
+            Destroy(this.transform.parent.gameObject);
         }
+            
     }
 }

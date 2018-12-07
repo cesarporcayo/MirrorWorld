@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Levels/2-Obstacles/Level 4.unity
+- path: Assets/Levels/World4/World4Level3.unity
   isLoaded: 1
   isActive: 1
